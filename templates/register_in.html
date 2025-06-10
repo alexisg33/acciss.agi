@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>Registrar Entrada</title></head>
+<body>
+  <h1>Registrar Entrada de Componente</h1>
+  <form method="post">
+    <p><label>Número de Parte:</label><br><input type="text" name="part_number" required></p>
+    <p><label>Descripción:</label><br><input type="text" name="description" required></p>
+    <p><label>Número de Serie:</label><br><input type="text" name="serial_number" required></p>
+    <p><label>Ubicación:</label><br><input type="text" name="location" required></p>
+    <p><label>Estado:</label><br><input type="text" name="status" required></p>
+    <p><label>Técnico:</label><br><input type="text" name="technician" required></p>
+    <p><label>Matrícula de Aeronave:</label><br><input type="text" name="aircraft_reg" required></p>
+    <p><button type="submit">Registrar Entrada</button></p>
+  </form>
+  <p><a href="{{ url_for('index') }}">Volver al inicio</a></p>
+</body>
+</html>

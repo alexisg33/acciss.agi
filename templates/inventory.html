@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>Inventario</title></head>
+<body>
+  <h1>Inventario Actual de Componentes</h1>
+  <table border="1" cellpadding="5">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Número de Parte</th>
+        <th>Descripción</th>
+        <th>Número de Serie</th>
+        <th>Fecha de Entrada</th>
+        <th>Ubicación</th>
+        <th>Estado</th>
+        <th>Técnico</th>
+        <th>Matrícula</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for comp in components %}
+      <tr>
+        <td>{{ comp.id }}</td>
+        <td>{{ comp.part_number }}</td>
+        <td>{{ comp.description }}</td>
+        <td>{{ comp.serial_number }}</td>
+        <td>{{ comp.date_in }}</td>
+        <td>{{ comp.location }}</td>
+        <td>{{ comp.status }}</td>
+        <td>{{ comp.technician }}</td>
+        <td>{{ comp.aircraft_reg }}</td>
+        <td>
+          <form action="{{ url_for('register_out', id=comp.id) }}" method="post" style="display:inline;">
+            <input type="text" name="workshop" placeholder="Taller">
+            <input type="text" name="technician_out" placeholder="Técnico salida">
+            <input type="text" name="destination" placeholder="Destino">
+            <button type="submit">Registrar Salida</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="10">No hay componentes en inventario.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p><a href="{{ url_for('index') }}">Volver al inicio</a></p>
+</body>
+</html>
