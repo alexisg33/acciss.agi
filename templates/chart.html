@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gráficas - A.C.C.I.S.S.</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin: 20px;
+            font-size: 2rem;
+            color: #00bfff;
+        }
+
+        canvas {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 90%;
+            box-shadow: 0 0 12px rgba(0, 191, 255, 0.4);
+        }
+
+        .back-button {
+            margin-top: 30px;
+            padding: 10px 16px;
+            background-color: #00bfff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .back-button:hover {
+            background-color: #0099cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Entradas vs Salidas por Matrícula</h1>
+    <canvas id="matriculaChart" width="800" height="400"></canvas>
+
+    <a href="/" class="back-button">Volver al inicio</a>
+
+    <script>
+        fetch("/chart_data")
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('matriculaChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: 'Entradas',
+                                data: data.entradas,
+                                backgroundColor: '#4CAF50'
+                            },
+                            {
+                                label: 'Salidas',
+                                data: data.salidas,
+                                backgroundColor: '#F44336'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: 'white'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Componentes por Matrícula',
+                                color: 'white'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: 'white'
+                                },
+                                grid: {
+                                    color: '#333'
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: 'white'
+                                },
+                                grid: {
+                                    color: '#333'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

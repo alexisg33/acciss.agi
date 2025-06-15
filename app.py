@@ -1,29 +1,29 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
-from datetime import datetime
+import os
 
 app = Flask(__name__)
 
-def get_db_connection():
-    conn = sqlite3.connect('components.db')
-    conn.row_factory = sqlite3.Row
-    return conn
+DB_FILE = 'components.db'
 
 def init_db():
-    conn = get_db_connection()
-    conn.execute('''
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
         CREATE TABLE IF NOT EXISTS components (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             part_number TEXT,
             description TEXT,
             serial_number TEXT,
-            date_in TEXT,
+            entry_date TEXT,
             location TEXT,
             status TEXT,
             technician TEXT,
-            aircraft_reg TEXT,
-            date_out TEXT,
-            destination TEXT
+            aircraft_registration TEXT,
+            output_location TEXT,
+            output_technician TEXT,
+            output_destination TEXT,
+            output_date TEXT
         )
     ''')
     conn.commit()
@@ -36,51 +36,105 @@ def index():
 @app.route('/register_in', methods=['GET', 'POST'])
 def register_in():
     if request.method == 'POST':
-        part_number = request.form['part_number']
-        description = request.form['description']
-        serial_number = request.form['serial_number']
-        date_in = datetime.now().strftime('%Y-%m-%d')
-        location = request.form['location']
-        status = request.form['status']
-        technician = request.form['technician']
-        aircraft_reg = request.form['aircraft_reg']
+        data = (
+            request.form['part_number'],
+            request.form['description'],
+            request.form['serial_number'],
+            request.form['location'],
+            request.form['status'],
+            request.form['technician'],
+            request.form['aircraft_registration']
+        )
 
-        conn = get_db_connection()
-        conn.execute('''
-            INSERT INTO components (part_number, description, serial_number, date_in, location, status, technician, aircraft_reg)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (part_number, description, serial_number, date_in, location, status, technician, aircraft_reg))
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO components (
+                part_number, description, serial_number,
+                entry_date, location, status, technician, aircraft_registration
+            )
+            VALUES (?, ?, ?, DATE('now'), ?, ?, ?, ?)
+        ''', data)
         conn.commit()
         conn.close()
-        return redirect(url_for('inventory'))
+
+        return redirect('/inventory')
+
     return render_template('register_in.html')
 
 @app.route('/inventory')
 def inventory():
-    conn = get_db_connection()
-    components = conn.execute('SELECT * FROM components WHERE date_out IS NULL').fetchall()
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM components WHERE output_date IS NULL')
+    rows = cursor.fetchall()
+    columns = [col[0] for col in cursor.description]
+    components = [dict(zip(columns, row)) for row in rows]
     conn.close()
     return render_template('inventory.html', components=components)
 
 @app.route('/register_out/<int:id>', methods=['POST'])
 def register_out(id):
-    date_out = datetime.now().strftime('%Y-%m-%d')
-    workshop = request.form['workshop']
-    technician_out = request.form['technician_out']
-    destination = request.form['destination']
+    output_location = request.form['output_location']
+    output_technician = request.form['output_technician']
+    output_destination = request.form['output_destination']
 
-    conn = get_db_connection()
-    conn.execute('''
+    print(f"SALIDA REGISTRADA -> ID: {id}, Ubicación: {output_location}, Técnico: {output_technician}, Destino: {output_destination}")
+
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
         UPDATE components
-        SET date_out = ?, aircraft_reg = ?, technician = ?, destination = ?
+        SET output_location = ?, output_technician = ?, output_destination = ?, output_date = DATE('now')
         WHERE id = ?
-    ''', (date_out, workshop, technician_out, destination, id))
+    ''', (output_location, output_technician, output_destination, id))
     conn.commit()
     conn.close()
+
     return redirect(url_for('inventory'))
 
+@app.route('/historial_salidas')
+@app.route('/history')  # ruta alternativa opcional
+def historial_salidas():
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT * FROM components
+        WHERE output_date IS NOT NULL
+        ORDER BY output_date DESC
+    ''')
+    rows = cursor.fetchall()
+    columns = [col[0] for col in cursor.description]
+    salidas = [dict(zip(columns, row)) for row in rows]
+    conn.close()
+    return render_template('historial_salidas.html', salidas=salidas)
+
+@app.route('/chart')
+def chart():
+    return render_template('chart.html')
+
+@app.route('/chart_data')
+def chart_data():
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT aircraft_registration,
+               COUNT(CASE WHEN output_date IS NULL THEN 1 END) AS entradas,
+               COUNT(CASE WHEN output_date IS NOT NULL THEN 1 END) AS salidas
+        FROM components
+        GROUP BY aircraft_registration
+    ''')
+    rows = cursor.fetchall()
+    conn.close()
+
+    data = {
+        'labels': [row[0] for row in rows],
+        'entradas': [row[1] for row in rows],
+        'salidas': [row[2] for row in rows]
+    }
+    return jsonify(data)
+
 if __name__ == '__main__':
-    import os
-    port = int(os.environ.get('PORT', 5000))
     init_db()
-    app.run(host='0.0.0.0', port=port)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)

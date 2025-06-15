@@ -1,49 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head><meta charset="utf-8"><title>Inventario</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario - A.C.C.I.S.S.</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #dbeeff, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #003366;
+            padding: 20px 0;
+        }
+
+        table {
+            width: 95%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .form-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .form-vertical input[type="text"] {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100px;
+            font-size: 0.85rem;
+        }
+
+        .form-vertical input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .form-vertical input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
 <body>
-  <h1>Inventario Actual de Componentes</h1>
-  <table border="1" cellpadding="5">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Número de Parte</th>
-        <th>Descripción</th>
-        <th>Número de Serie</th>
-        <th>Fecha de Entrada</th>
-        <th>Ubicación</th>
-        <th>Estado</th>
-        <th>Técnico</th>
-        <th>Matrícula</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for comp in components %}
-      <tr>
-        <td>{{ comp.id }}</td>
-        <td>{{ comp.part_number }}</td>
-        <td>{{ comp.description }}</td>
-        <td>{{ comp.serial_number }}</td>
-        <td>{{ comp.date_in }}</td>
-        <td>{{ comp.location }}</td>
-        <td>{{ comp.status }}</td>
-        <td>{{ comp.technician }}</td>
-        <td>{{ comp.aircraft_reg }}</td>
-        <td>
-          <form action="{{ url_for('register_out', id=comp.id) }}" method="post" style="display:inline;">
-            <input type="text" name="workshop" placeholder="Taller">
-            <input type="text" name="technician_out" placeholder="Técnico salida">
-            <input type="text" name="destination" placeholder="Destino">
-            <button type="submit">Registrar Salida</button>
-          </form>
-        </td>
-      </tr>
-      {% else %}
-      <tr><td colspan="10">No hay componentes en inventario.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <p><a href="{{ url_for('index') }}">Volver al inicio</a></p>
+    <h1>Inventario de Componentes</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Número de Parte</th>
+            <th>Descripción</th>
+            <th>Número de Serie</th>
+            <th>Fecha de Entrada</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th>Técnico</th>
+            <th>Matrícula</th>
+            <th>Acción</th>
+        </tr>
+        {% for comp in components %}
+            {% if not comp.output_date %}
+            <tr>
+                <td>{{ comp.id }}</td>
+                <td>{{ comp.part_number }}</td>
+                <td>{{ comp.description }}</td>
+                <td>{{ comp.serial_number }}</td>
+                <td>{{ comp.entry_date }}</td>
+                <td>{{ comp.location }}</td>
+                <td>{{ comp.status }}</td>
+                <td>{{ comp.technician }}</td>
+                <td>{{ comp.aircraft_registration }}</td>
+                <td>
+                  <form action="{{ url_for('register_out', id=comp.id) }}" method="post">
+    <input type="text" name="output_location" placeholder="Taller" required>
+    <input type="text" name="output_technician" placeholder="Técnico salida" required>
+    <input type="text" name="output_destination" placeholder="Destino" required>
+    <input type="submit" value="Registrar Salida">
+</form>
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+
+    <div class="back-link">
+        <a href="{{ url_for('index') }}">Volver al inicio</a>
+    </div>
 </body>
 </html>

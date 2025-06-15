@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Salidas - A.C.C.I.S.S.</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #dbeeff, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #003366;
+            padding: 20px 0;
+        }
+
+        table {
+            width: 95%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .bottom-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .bottom-buttons a {
+            margin: 0 10px;
+            display: inline-block;
+            padding: 10px 16px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .bottom-buttons a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Historial de Salidas</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Número de Parte</th>
+            <th>Descripción</th>
+            <th>Número de Serie</th>
+            <th>Fecha de Entrada</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th>Técnico Entrada</th>
+            <th>Matrícula</th>
+            <th>Ubicación Salida</th>
+            <th>Técnico Salida</th>
+            <th>Destino</th>
+            <th>Fecha de Salida</th>
+        </tr>
+        {% for salida in salidas %}
+        <tr>
+            <td>{{ salida.id }}</td>
+            <td>{{ salida.part_number }}</td>
+            <td>{{ salida.description }}</td>
+            <td>{{ salida.serial_number }}</td>
+            <td>{{ salida.entry_date }}</td>
+            <td>{{ salida.location }}</td>
+            <td>{{ salida.status }}</td>
+            <td>{{ salida.technician }}</td>
+            <td>{{ salida.aircraft_registration }}</td>
+            <td>{{ salida.output_location }}</td>
+            <td>{{ salida.output_technician }}</td>
+            <td>{{ salida.output_destination }}</td>
+            <td>{{ salida.output_date }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="bottom-buttons">
+        <a href="{{ url_for('inventory') }}">Volver al Inventario</a>
+        <a href="{{ url_for('index') }}">Volver al Inicio</a>
+    </div>
+</body>
+</html>

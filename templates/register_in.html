@@ -1,18 +1,108 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head><meta charset="utf-8"><title>Registrar Entrada</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Entrada - A.C.C.I.S.S.</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #dbeeff, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #003366;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #003366;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
 <body>
-  <h1>Registrar Entrada de Componente</h1>
-  <form method="post">
-    <p><label>Número de Parte:</label><br><input type="text" name="part_number" required></p>
-    <p><label>Descripción:</label><br><input type="text" name="description" required></p>
-    <p><label>Número de Serie:</label><br><input type="text" name="serial_number" required></p>
-    <p><label>Ubicación:</label><br><input type="text" name="location" required></p>
-    <p><label>Estado:</label><br><input type="text" name="status" required></p>
-    <p><label>Técnico:</label><br><input type="text" name="technician" required></p>
-    <p><label>Matrícula de Aeronave:</label><br><input type="text" name="aircraft_reg" required></p>
-    <p><button type="submit">Registrar Entrada</button></p>
-  </form>
-  <p><a href="{{ url_for('index') }}">Volver al inicio</a></p>
+    <div class="form-container">
+        <h1>Registrar Entrada</h1>
+        <form action="{{ url_for('register_in') }}" method="post">
+            <label for="part_number">Número de Parte:</label>
+            <input type="text" name="part_number" required>
+
+            <label for="description">Descripción:</label>
+            <input type="text" name="description" required>
+
+            <label for="serial_number">Número de Serie:</label>
+            <input type="text" name="serial_number" required>
+
+            <label for="location">Ubicación:</label>
+            <input type="text" name="location" required>
+
+            <label for="status">Estado:</label>
+            <input type="text" name="status" required>
+
+            <label for="technician">Técnico:</label>
+            <input type="text" name="technician" required>
+
+            <label for="aircraft_registration">Matrícula Aeronave:</label>
+            <input type="text" name="aircraft_registration" required>
+
+            <input type="submit" value="Registrar">
+        </form>
+
+        <a href="{{ url_for('index') }}">Volver al inicio</a>
+    </div>
 </body>
 </html>

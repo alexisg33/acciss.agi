@@ -1,9 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head><meta charset="utf-8"><title>A.C.C.I.S.S.</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>A.C.C.I.S.S.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(to bottom, #dbeeff, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 100px;
+            font-size: 2.8em;
+            color: #003366;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .main-button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px;
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .main-button:hover {
+            background-color: #0056b3;
+        }
+       .agi-tech {
+  position: fixed;
+  bottom: 10px;
+  right: 15px;
+  font-size: 0.9rem;
+  font-family: 'Orbitron', sans-serif;
+  color: #00c3ff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 6px 14px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 195, 255, 0.4);
+  z-index: 1000;
+  letter-spacing: 1px;
+}
+
+
+    </style>
+</head>
+
 <body>
-  <h1>Bienvenido a A.C.C.I.S.S.</h1>
-  <p><a href="{{ url_for('register_in') }}">Registrar Entrada</a></p>
-  <p><a href="{{ url_for('inventory') }}">Ver Inventario</a></p>
+    <h1>Bienvenido a A.C.C.I.S.S.</h1>
+
+    <div class="button-container">
+        <a href="{{ url_for('register_in') }}" class="main-button">Registrar Entrada</a>
+        <a href="{{ url_for('inventory') }}" class="main-button">Ver Inventario</a>
+        <a href="{{ url_for('chart') }}" class="main-button">Ver Gráficas</a>
+        <a href="{{ url_for('historial_salidas') }}" class="main-button">Historial de Salidas</a>
+    </div>
+    <div class="agi-tech">A.G.I. Technology</div>
 </body>
 </html>
