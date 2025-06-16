@@ -1,7 +1,6 @@
 services:
   - type: web
-    name: acciss
+    name: acciss.agi
     env: python
-    buildCommand: ""
-    startCommand: gunicorn app:app
-    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python3 app.py"
