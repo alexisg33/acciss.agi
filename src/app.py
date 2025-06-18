@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 DB_FILE = 'components.db'
 
+# Inicializar base de datos con nueva columna 'wo_number'
 def init_db():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
@@ -20,6 +21,7 @@ def init_db():
             status TEXT,
             technician TEXT,
             aircraft_registration TEXT,
+            wo_number TEXT,
             output_location TEXT,
             output_technician TEXT,
             output_destination TEXT,
@@ -28,6 +30,8 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
+
+init_db()
 
 @app.route('/')
 def index():
@@ -43,7 +47,8 @@ def register_in():
             request.form['location'],
             request.form['status'],
             request.form['technician'],
-            request.form['aircraft_registration']
+            request.form['aircraft_registration'],
+            request.form['wo_number']
         )
 
         conn = sqlite3.connect(DB_FILE)
@@ -51,9 +56,10 @@ def register_in():
         cursor.execute('''
             INSERT INTO components (
                 part_number, description, serial_number,
-                entry_date, location, status, technician, aircraft_registration
+                entry_date, location, status, technician,
+                aircraft_registration, wo_number
             )
-            VALUES (?, ?, ?, DATE('now'), ?, ?, ?, ?)
+            VALUES (?, ?, ?, DATE('now'), ?, ?, ?, ?, ?)
         ''', data)
         conn.commit()
         conn.close()
@@ -134,25 +140,20 @@ def chart_data():
     }
     return jsonify(data)
 
-import os
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # usarás variable de entorno
+# Configuración para despliegue en Render (opcional si usas PostgreSQL también)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
 
-# Crear las tablas si no existen
+# Crear las tablas si usas PostgreSQL
 with app.app_context():
     db.create_all()
 
 # Solo para depuración
 print("DATABASE_URL:", os.environ.get('DATABASE_URL'))
 
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-
