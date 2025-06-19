@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
 
+# ⚠️ Corregido: se especifica dónde están los templates
 app = Flask(__name__, template_folder="templates")
 
 # Configuración para PostgreSQL desde Render
@@ -57,3 +58,4 @@ def register_in():
 @app.route('/inventory')
 def inventory():
     components = Component.query.filter_by(output_date=None)
+    return render_template('inventory.html', components=components)  # ← asumimos que tenés esta plantilla
