@@ -6,6 +6,8 @@ import os
 # ⚠️ Corregido: se especifica dónde están los templates
 app = Flask(__name__, template_folder="templates")
 
+
+
 # Configuración para PostgreSQL desde Render
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
